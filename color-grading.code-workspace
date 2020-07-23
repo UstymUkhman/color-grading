@@ -1,0 +1,13 @@
+{
+	"settings": {
+		"git.ignoreLimitWarning": true,
+		"js-import.alias": {
+			"@three": "three/src",
+			"@": "/src"
+		}
+  },
+
+  "folders": [{
+    "path": "."
+  }]
+}

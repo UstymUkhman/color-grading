@@ -1,3 +1,15 @@
 # color-grading #
 
-*npm run build && npm run dev*
+`yarn`
+
+`yarn start`
+
+`yarn lint:js`
+
+`yarn lint:css`
+
+`yarn test`
+
+`yarn build`
+
+`yarn serve`

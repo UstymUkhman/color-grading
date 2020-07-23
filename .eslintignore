@@ -1,0 +1,3 @@
+tests/**/*.*
+public/**/*.*
+webpack.config.js
