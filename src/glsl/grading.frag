@@ -1,5 +1,7 @@
-#version 300 es
+// #version 300 es
 precision highp float;
+
+#define texture texture2D
 
 #include ./sample2DAs3DTexture.frag;
 #include ./lookupFrom2DTexture.frag;
@@ -8,8 +10,10 @@ uniform sampler2D grading;
 uniform sampler2D frame;
 uniform bool isLookup;
 
-out vec4 fragColor;
-in vec2 vUv;
+// out vec4 fragColor;
+// in vec2 vUv;
+
+varying vec2 vUv;
 
 void main (void) {
   vec4 color = texture(frame, vUv);
@@ -27,5 +31,6 @@ void main (void) {
     gradedColor.a = color.a;
   }
 
-  fragColor = gradedColor;
+  // fragColor = gradedColor;
+  gl_FragColor = gradedColor;
 }

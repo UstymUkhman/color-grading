@@ -1,17 +1,26 @@
 import { MeshBasicMaterial } from '@three/materials/MeshBasicMaterial';
 import { PerspectiveCamera } from '@three/cameras/PerspectiveCamera';
 import { ShaderMaterial } from '@three/materials/ShaderMaterial';
+import { WebGL1Renderer } from '@three/renderers/WebGL1Renderer';
 import { EffectComposer } from '@postprocessing/EffectComposer';
 import { PlaneGeometry } from '@three/geometries/PlaneGeometry';
-import { WebGLRenderer } from '@three/renderers/WebGLRenderer';
 import { TextureLoader } from '@three/loaders/TextureLoader';
+import { Pass } from '@postprocessing/Pass';
 
 import { RenderPass } from '@postprocessing/RenderPass';
-import { ShaderPass } from '@postprocessing/ShaderPass';
+// import { ShaderPass } from '@postprocessing/ShaderPass';
 import { Texture } from '@three/textures/Texture';
 import { LinearFilter } from '@three/constants';
 import { Scene } from '@three/scenes/Scene';
 import { Mesh } from '@three/objects/Mesh';
+
+import * as THREE from 'three/build/three.min.js';
+
+THREE.ShaderMaterial = ShaderMaterial;
+THREE.Pass = Pass;
+window.THREE = THREE;
+
+require('three/examples/js/postprocessing/ShaderPass');
 
 import fragGrading from '@/glsl/grading.frag';
 import vertGrading from '@/glsl/grading.vert';
@@ -55,7 +64,7 @@ export default class ColorGrading {
   }
 
   createWebGLEnvironment () {
-    this.renderer = new WebGLRenderer({ antialias: true, alpha: false });
+    this.renderer = new WebGL1Renderer({ antialias: true, alpha: false });
 
     this.scene = new Scene();
 
@@ -90,7 +99,7 @@ export default class ColorGrading {
       texture.magFilter = LinearFilter;
 
       if (create) {
-        this.grading = new ShaderPass(
+        this.grading = new THREE.ShaderPass(
           new ShaderMaterial({
             fragmentShader: fragGrading,
             vertexShader: vertGrading,
