@@ -39,7 +39,7 @@ export default class ColorGrading {
   createVideoStream () {
     this.video = document.createElement('video');
     this.video.oncanplay = this.init.bind(this);
-    this.video.src = '/assets/video/lake.mp4';
+    this.video.src = './assets/video/lake.mp4';
 
     this.video.height = this.height;
     this.video.width = this.width;
@@ -94,7 +94,7 @@ export default class ColorGrading {
   }
 
   setColorGrading (lutTable = 'Standard', create = true) {
-    this.textureLoader.load(`/assets/LUT/${lutTable}.png`, texture => {
+    this.textureLoader.load(`./assets/LUT/${lutTable}.png`, texture => {
       texture.minFilter = LinearFilter;
       texture.magFilter = LinearFilter;
 
