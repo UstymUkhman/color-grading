@@ -94,12 +94,12 @@ export default class ColorGrading {
 
             uniforms: {
               frame: { value: this.videoTexture },
-              grading: { value: texture },
-              isLookup: { value: false }
+              grading: { value: texture }
             }
           })
         );
 
+        this.grading.material.uniforms.isLookup.value = false;
         this.composer.addPass(this.grading);
       } else {
         const lookup = lutTable.includes('8x8');
