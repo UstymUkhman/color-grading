@@ -33,9 +33,8 @@ vec4 lookupFrom2DTexture (sampler2D lut, vec4 color) {
     texPos2.y = 1.0 - texPos2.y;
   #endif
 
-  lowp vec4 color1 = texture(lut, texPos1);
-  lowp vec4 color2 = texture(lut, texPos2);
+  lowp vec4 color1 = texture2D(lut, texPos1);
+  lowp vec4 color2 = texture2D(lut, texPos2);
 
-  lowp vec4 newColor = mix(color1, color2, fract(blueColor));
-  return newColor;
+  return mix(color1, color2, fract(blueColor));
 }

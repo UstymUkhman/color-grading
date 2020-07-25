@@ -5,25 +5,15 @@ import { WebGL1Renderer } from '@three/renderers/WebGL1Renderer';
 import { EffectComposer } from '@postprocessing/EffectComposer';
 import { PlaneGeometry } from '@three/geometries/PlaneGeometry';
 import { TextureLoader } from '@three/loaders/TextureLoader';
-import { Pass } from '@postprocessing/Pass';
+import { VideoTexture } from '@three/textures/VideoTexture';
 
 import { RenderPass } from '@postprocessing/RenderPass';
-// import { ShaderPass } from '@postprocessing/ShaderPass';
-import { Texture } from '@three/textures/Texture';
+import { ShaderPass } from '@postprocessing/ShaderPass';
 import { LinearFilter } from '@three/constants';
-import { Scene } from '@three/scenes/Scene';
-import { Mesh } from '@three/objects/Mesh';
-
-import * as THREE from 'three/build/three.min.js';
-
-THREE.ShaderMaterial = ShaderMaterial;
-THREE.Pass = Pass;
-window.THREE = THREE;
-
-require('three/examples/js/postprocessing/ShaderPass');
-
 import fragGrading from '@/glsl/grading.frag';
 import vertGrading from '@/glsl/grading.vert';
+import { Scene } from '@three/scenes/Scene';
+import { Mesh } from '@three/objects/Mesh';
 
 export default class ColorGrading {
   constructor () {
@@ -64,9 +54,8 @@ export default class ColorGrading {
   }
 
   createWebGLEnvironment () {
-    this.renderer = new WebGL1Renderer({ antialias: true, alpha: false });
-
     this.scene = new Scene();
+    this.renderer = new WebGL1Renderer();
 
     this.camera = new PerspectiveCamera(45, this.ratio, 1, 10000);
     this.camera.position.z = Math.round(this.height / 0.8275862);
@@ -77,12 +66,11 @@ export default class ColorGrading {
     document.body.appendChild(this.renderer.domElement);
 
     this.composer = new EffectComposer(this.renderer);
-    this.composer.setSize(this.width, this.height);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
   }
 
   createVideoGeometry () {
-    this.videoTexture = new Texture(this.video);
+    this.videoTexture = new VideoTexture(this.video);
 
     this.videoTexture.minFilter = LinearFilter;
     this.videoTexture.magFilter = LinearFilter;
@@ -99,15 +87,15 @@ export default class ColorGrading {
       texture.magFilter = LinearFilter;
 
       if (create) {
-        this.grading = new THREE.ShaderPass(
+        this.grading = new ShaderPass(
           new ShaderMaterial({
             fragmentShader: fragGrading,
             vertexShader: vertGrading,
 
             uniforms: {
-              frame: { type: 't', value: this.videoTexture },
-              grading: { type: 't', value: texture },
-              isLookup: { type: 'b', value: false }
+              frame: { value: this.videoTexture },
+              grading: { value: texture },
+              isLookup: { value: false }
             }
           })
         );
@@ -123,32 +111,23 @@ export default class ColorGrading {
   }
 
   onResize () {
-    let height = window.innerHeight;
-    let width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.width = window.innerWidth;
 
-    if (width > height) {
-      height = width / 16 * 9;
+    if (this.width > this.height) {
+      this.height = this.width / 16 * 9;
     } else {
-      width = height / 9 * 16;
+      this.width = this.height / 9 * 16;
     }
 
-    this.video.height = height;
-    this.video.width = width;
+    this.renderer.setSize(this.width, this.height);
 
-    if (this.renderer) {
-      this.renderer.setSize(width, height);
-      this.composer.setSize(width, height);
-      this.camera.updateProjectionMatrix();
-
-    }
+    this.video.height = this.height;
+    this.video.width = this.width;
   }
 
   render () {
     this.frame = requestAnimationFrame(this.render.bind(this));
-
-    if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
-      this.videoTexture.needsUpdate = true;
-      this.composer.render();
-    }
+    this.composer.render();
   }
 }
