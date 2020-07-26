@@ -1,5 +1,7 @@
 # color-grading #
 
+> WebGL Color Grading
+
 ![](./public/preview.gif)
 
 `yarn`
