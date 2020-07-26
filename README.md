@@ -1,5 +1,7 @@
 # color-grading #
 
+![](./public/preview.gif)
+
 `yarn`
 
 `yarn start`

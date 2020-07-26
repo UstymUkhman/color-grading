@@ -83,6 +83,8 @@ export default class ColorGrading {
 
   setColorGrading (lutTable = 'Standard', create = true) {
     this.textureLoader.load(`./assets/LUT/${lutTable}.png`, texture => {
+      const lookup = lutTable.includes('8x8');
+
       texture.minFilter = LinearFilter;
       texture.magFilter = LinearFilter;
 
@@ -94,19 +96,17 @@ export default class ColorGrading {
 
             uniforms: {
               frame: { value: this.videoTexture },
-              grading: { value: texture }
+              isLookup: { value: false },
+              grading: { value: null }
             }
           })
         );
 
-        this.grading.material.uniforms.isLookup.value = false;
         this.composer.addPass(this.grading);
-      } else {
-        const lookup = lutTable.includes('8x8');
-
-        this.grading.material.uniforms.grading.value = texture;
-        this.grading.material.uniforms.isLookup.value = lookup;
       }
+
+      this.grading.material.uniforms.isLookup.value = lookup;
+      this.grading.material.uniforms.grading.value = texture;
     });
   }
 
