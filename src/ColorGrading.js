@@ -54,8 +54,9 @@ export default class ColorGrading {
   }
 
   createWebGLEnvironment () {
-    this.scene = new Scene();
     this.renderer = new WebGL1Renderer();
+
+    this.scene = new Scene();
 
     this.camera = new PerspectiveCamera(45, this.ratio, 1, 10000);
     this.camera.position.z = Math.round(this.height / 0.8275862);
@@ -75,37 +76,33 @@ export default class ColorGrading {
     this.videoTexture.minFilter = LinearFilter;
     this.videoTexture.magFilter = LinearFilter;
 
+    this.grading = new ShaderPass(
+      new ShaderMaterial({
+        fragmentShader: fragGrading,
+        vertexShader: vertGrading,
+
+        uniforms: {
+          frame: { value: this.videoTexture },
+          isLookup: { value: false },
+          grading: { value: null }
+        }
+      })
+    );
+
     this.scene.add(new Mesh(
       new PlaneGeometry(this.width, this.height, 1, 1),
       new MeshBasicMaterial({ map: this.videoTexture })
     ));
+
+    this.composer.addPass(this.grading);
   }
 
-  setColorGrading (lutTable = 'Standard', create = true) {
+  setColorGrading (lutTable = 'Standard') {
     this.textureLoader.load(`./assets/LUT/${lutTable}.png`, texture => {
-      const lookup = lutTable.includes('8x8');
-
       texture.minFilter = LinearFilter;
       texture.magFilter = LinearFilter;
 
-      if (create) {
-        this.grading = new ShaderPass(
-          new ShaderMaterial({
-            fragmentShader: fragGrading,
-            vertexShader: vertGrading,
-
-            uniforms: {
-              frame: { value: this.videoTexture },
-              isLookup: { value: false },
-              grading: { value: null }
-            }
-          })
-        );
-
-        this.composer.addPass(this.grading);
-      }
-
-      this.grading.material.uniforms.isLookup.value = lookup;
+      this.grading.material.uniforms.isLookup.value = lutTable.includes('8x8');
       this.grading.material.uniforms.grading.value = texture;
     });
   }
