@@ -1,4 +1,4 @@
-# [color-grading](http://35.158.218.205/experiments/color-grading/) #
+# [color-grading](https://ustymukhman.github.io/color-grading/public/) #
 
 > WebGL Color Grading
 
