@@ -47,7 +47,7 @@
     "terser-webpack-plugin": "^3.0.7",
     "threejs-glsl-loader": "^1.0.4",
     "url-loader": "^4.0.0",
-    "webpack": "^5.94.0",
+    "webpack": "^5.104.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^5.2.1",
     "webpack-glsl-loader": "^1.0.1",
